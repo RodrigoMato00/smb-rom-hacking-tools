@@ -260,7 +260,7 @@ def main():
     if modified:
         hacker.save_rom()
     else:
-        print("[!] No modifications specified. Use --help for usage.")
+        print("[!] No modifications specified. Run without arguments for usage information.")
 
 
 if __name__ == "__main__":

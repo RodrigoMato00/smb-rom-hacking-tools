@@ -9,7 +9,6 @@ NES Color Palette addresses in SMB ROM:
 """
 
 import sys
-import struct
 
 
 class PaletteEditor:

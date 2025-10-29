@@ -16,7 +16,6 @@ Note: Full NES emulation requires implementing:
 """
 
 import sys
-import struct
 
 
 class NESEmulator:
