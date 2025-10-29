@@ -1,0 +1,3 @@
+# Core dependencies for SMB ROM hacking tools
+# No external dependencies required - pure Python implementation
+# Optional: pygame for NES emulator (if needed)
