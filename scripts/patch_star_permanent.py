@@ -1,75 +1,68 @@
 #!/usr/bin/env python3
 """
-patch_star_invincible.py
-Hackea la rutina de colisión Mario-enemigo para que Mario SIEMPRE
-sea tratado como 'estrella activa' → toca enemigo = enemigo muere,
-Mario nunca recibe daño.
+patch_star_permanent.py
+Hack the Mario-enemy collision routine so Mario is ALWAYS treated as having star power:
+- touching any enemy kills it
+- Mario never takes damage
 
-Idea:
-En la rutina PlayerEnemyCollision (~$D88A en PRG-ROM),
-hay este patrón (según tu desensamblado):
+Idea (from your disassembly):
+At PlayerEnemyCollision (~$D88A in PRG-ROM):
 
     D88A: LDA StarInvincibleTimer
-    D88D: BEQ HandlePECollisions  ; si timer = 0 -> daño normal
-    D88F: JMP ShellOrBlockDefeat  ; si no, matar enemigo
+    D88D: BEQ HandlePECollisions  ; if timer = 0 -> normal damage
+    D88F: JMP ShellOrBlockDefeat  ; else, kill enemy
 
-Nosotros NOPeamos el BEQ, para que JAMÁS vaya a daño normal.
-Entonces SIEMPRE se ejecuta el JMP ShellOrBlockDefeat.
+We NOP the BEQ at $D88D so it never branches to normal damage, always jumping to defeat.
 
-Pasos técnicos:
-- Tu ROM es iNES con header 16 bytes, PRG=32KB.
-- $C000-$FFFF = banco PRG alto (últimos 16KB del PRG).
-- $D88A está en ese banco, offset_local = $D88A - $C000.
-- offset_en_archivo = 16(header) + 16KB(banco0) + offset_local.
-
-Después NOPeamos el BEQ en $D88D.
-
-Uso:
-  python3 scripts/patch_star_invincible.py                    # Crea nueva ROM con invencibilidad
-  python3 scripts/patch_star_invincible.py roms/mi_rom.nes    # Modifica ROM específica
+Usage:
+  python3 scripts/patch_star_permanent.py                    # Create new ROM with invincibility
+  python3 scripts/patch_star_permanent.py roms/my_rom.nes    # Modify a specific ROM
 """
 
 import os
 import argparse
 from datetime import datetime
+from argparse import ArgumentDefaultsHelpFormatter
+from common_help import get_epilog
 
-# direcciones CPU que nos interesan (de tu desasm)
+# CPU addresses we care about
 ADDR_LDA_STAR = 0xD88A  # LDA StarInvincibleTimer
-ADDR_BEQ      = 0xD88D  # BEQ HandlePECollisions  (queremos NOP acá)
+ADDR_BEQ      = 0xD88D  # BEQ HandlePECollisions  (we NOP here)
 
 def cpu_addr_to_file_offset(cpu_addr):
     """
-    Convierte dirección CPU ($8000-$FFFF) a offset dentro del .nes,
-    asumiendo:
-      - header iNES 16 bytes
-      - PRG-ROM 32 KB = banco0 ($8000-$BFFF), banco1 ($C000-$FFFF)
-      - banco0 va inmediatamente después del header
-      - banco1 va después de banco0
+    Convert CPU address ($8000-$FFFF) to .nes file offset, assuming:
+      - iNES 16-byte header
+      - PRG-ROM 32 KB = bank0 ($8000-$BFFF), bank1 ($C000-$FFFF)
+      - bank0 follows the header; bank1 follows bank0
 
-    Para direcciones < $C000: usan banco0
-    Para direcciones >=$C000: usan banco1
+    Addresses < $C000 use bank0; >= $C000 use bank1.
     """
     HEADER_SIZE = 16
-    BANK_SIZE   = 16 * 1024  # 16KB
+    BANK_SIZE   = 16 * 1024  # 16 KB
 
     if cpu_addr < 0x8000 or cpu_addr > 0xFFFF:
-        raise ValueError("Dirección fuera de rango PRG-ROM NES estándar")
+        raise ValueError("Address out of standard NES PRG-ROM range")
 
     if cpu_addr < 0xC000:
-        # banco bajo
+        # low bank
         offset_in_bank = cpu_addr - 0x8000
         file_off = HEADER_SIZE + offset_in_bank
     else:
-        # banco alto
+        # high bank
         offset_in_bank = cpu_addr - 0xC000
         file_off = HEADER_SIZE + BANK_SIZE + offset_in_bank
 
     return file_off
 
 def main():
-    parser = argparse.ArgumentParser(description="Hackea Super Mario Bros para hacer a Mario invencible permanentemente")
+    parser = argparse.ArgumentParser(
+        description="Hack SMB to make Mario permanently invincible",
+        formatter_class=ArgumentDefaultsHelpFormatter,
+        epilog=get_epilog("patch_star_permanent"),
+    )
     parser.add_argument("rom_path", nargs="?", default=None,
-                        help="Ruta a la ROM de NES (si no se especifica, usa SuperMarioBros.nes y crea nueva)")
+                        help="Path to NES ROM (default uses SuperMarioBros.nes and creates a new ROM)")
     args = parser.parse_args()
 
     # Determinar qué ROM usar
@@ -81,7 +74,7 @@ def main():
         create_new = False
 
     if not os.path.exists(rom_path):
-        print(f"❌ No se encontró {rom_path}")
+        print(f"Not found: {rom_path}")
         return
 
     with open(rom_path, "rb") as f:
@@ -89,25 +82,22 @@ def main():
 
     # sanity: chequear cabecera "NES\x1A"
     if rom[0:4] != b"NES\x1a":
-        print("❌ ROM no parece iNES válida")
+        print("ROM does not look like a valid iNES file")
         return
 
     # calculamos offsets de las instrucciones
     beq_off = cpu_addr_to_file_offset(ADDR_BEQ)
 
     # Preview antes de parchar (opcional debug para vos):
-    # BEQ opcode en 6502 = 0xF0, seguido de 1 byte relativo (salto corto)
     original_beq_opcode = rom[beq_off]
     original_beq_arg    = rom[beq_off+1]
-    print(f"Antes del parche en {hex(ADDR_BEQ)}:")
+    print(f"Before patch at {hex(ADDR_BEQ)}:")
     print(f"  opcode={hex(original_beq_opcode)} arg={hex(original_beq_arg)}")
-    # esperamos ver algo tipo F0 xx
 
     # Parche:
-    # Vamos a poner NOP (0xEA) 0xEA en lugar de BEQ rel8
     rom[beq_off]   = 0xEA  # NOP
     rom[beq_off+1] = 0xEA  # NOP
-    print("Aplicado parche: BEQ -> NOP,NOP")
+    print("Applied patch: BEQ -> NOP,NOP")
 
     # Guardar ROM modificada
     if create_new:
@@ -116,15 +106,15 @@ def main():
         out_path = f"roms/SuperMarioBros_star_infinite_{ts}.nes"
         with open(out_path, "wb") as f:
             f.write(rom)
-        print("✅ ROM hackeada escrita en:", out_path)
+        print("Hacked ROM written to:", out_path)
     else:
         # Sobreescribir ROM existente
         with open(rom_path, "wb") as f:
             f.write(rom)
-        print("✅ ROM hackeada modificada:", rom_path)
+        print("Hacked ROM modified:", rom_path)
 
-    print("➡ Esta ROM debería hacer que, al tocar un Goomba, el Goomba muera siempre,")
-    print("   y Mario no reciba daño nunca (efecto estrella permanente).")
+    print("With this ROM, touching a Goomba should always kill it,")
+    print("and Mario should not take damage (permanent star effect).")
 
 if __name__ == "__main__":
     main()

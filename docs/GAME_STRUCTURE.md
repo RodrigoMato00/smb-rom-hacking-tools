@@ -327,5 +327,3 @@ UpdateScreen:       ; $8E00
 - **`SCRIPTS_DOCUMENTATION.md`**: Documentación de herramientas
 
 ---
-
-*Documentación técnica de Super Mario Bros basada en análisis de assembler y código fuente*

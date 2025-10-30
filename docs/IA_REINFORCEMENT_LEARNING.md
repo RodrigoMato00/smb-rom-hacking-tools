@@ -1,10 +1,39 @@
+# IA con Reinforcement Learning (Mario PPO)
+
+## Entorno recomendado (Python 3.8)
+
+Para ejecutar `scripts/rl_demo_mario.py` se recomienda un entorno separado con Python 3.8 y versiones fijadas:
+
+```bash
+# Crear venv 3.8
+python3.8 -V          # Debe ser 3.8.x
+python3.8 -m venv venv38
+source venv38/bin/activate
+
+# pip compatible con gym 0.21.0
+pip install 'pip<24.1'
+
+# Dependencias RL
+pip install gym==0.21.0 nes_py==8.2.1 gym_super_mario_bros==7.3.0 stable-baselines3==1.6.2
+pip install torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1
+
+# Prueba rápida: entrena breve y juega 5s
+python3 scripts/rl_demo_mario.py --seconds 5 --timesteps 1000
+```
+
+Notas:
+- Estas versiones son conocidas por funcionar bien juntas en macOS ARM con Py 3.8.
+- Si ya tenés un modelo entrenado: `python3 scripts/rl_demo_mario.py --load mario_ppo_model.zip --seconds 20`.
+
+---
+
 # Inteligencia Artificial para Super Mario Bros
 
 Este documento explica en detalle el sistema de Inteligencia Artificial utilizado para entrenar un agente que juega Super Mario Bros mediante Reinforcement Learning (Aprendizaje por Refuerzo).
 
 ---
 
-## 📋 Índice
+## Índice
 
 1. [¿Qué tipo de IA se usa?](#qué-tipo-de-ia-se-usa)
 2. [¿Qué es Reinforcement Learning?](#qué-es-reinforcement-learning)
@@ -24,23 +53,23 @@ Este documento explica en detalle el sistema de Inteligencia Artificial utilizad
 Este proyecto utiliza **Reinforcement Learning (Aprendizaje por Refuerzo)**, una rama del Machine Learning donde un agente aprende a tomar decisiones mediante la interacción con un entorno.
 
 ### Características clave:
-- **Aprendizaje supervisado**: ❌ No requiere datos etiquetados
-- **Aprendizaje no supervisado**: ❌ No busca patrones ocultos en datos
-- **Reinforcement Learning**: ✅ El agente aprende mediante prueba y error, recibiendo recompensas (rewards) por acciones exitosas
+- Aprendizaje supervisado: No requiere datos etiquetados
+- Aprendizaje no supervisado: No busca patrones ocultos en datos
+- Reinforcement Learning: El agente aprende mediante prueba y error, recibiendo recompensas (rewards) por acciones exitosas
 
 ### Analogía simple:
 Imagina enseñarle a un perro trucos:
-- Le muestras un truco → **Estado** (situación actual)
-- El perro intenta algo → **Acción**
-- Le das un premio si lo hizo bien → **Recompensa positiva**
-- Lo regañas si lo hizo mal → **Recompensa negativa**
-- Con el tiempo, el perro aprende qué acciones funcionan mejor → **Política aprendida**
+- Le muestras un truco → Estado (situación actual)
+- El perro intenta algo → Acción
+- Le das un premio si lo hizo bien → Recompensa positiva
+- Lo regañas si lo hizo mal → Recompensa negativa
+- Con el tiempo, el perro aprende qué acciones funcionan mejor → Política aprendida
 
 En nuestro caso:
-- **Estado**: La pantalla actual del juego (imagen)
-- **Acción**: Saltar, moverse a la derecha, etc.
-- **Recompensa**: Avanzar en el nivel (+), perder una vida (-)
-- **Política**: La estrategia que aprende la IA para jugar
+- Estado: La pantalla actual del juego (imagen)
+- Acción: Saltar, moverse a la derecha, etc.
+- Recompensa: Avanzar en el nivel (+), perder una vida (-)
+- Política: La estrategia que aprende la IA para jugar
 
 ---
 
@@ -99,44 +128,44 @@ Ajusta su política para tomar mejores decisiones en el futuro
 ### Stack tecnológico completo:
 
 #### 1. **gym_super_mario_bros** (v7.3.0)
-- **Qué es**: Entorno de OpenAI Gym específico para Super Mario Bros
-- **Función**: Proporciona la interfaz entre Python y el emulador del juego
-- **Características**:
+- Qué es: Entorno de OpenAI Gym específico para Super Mario Bros
+- Función: Proporciona la interfaz entre Python y el emulador del juego
+- Características:
   - Emula Super Mario Bros usando `nes_py`
   - Proporciona observaciones (imágenes del juego)
   - Recibe acciones y devuelve recompensas
   - Maneja el ciclo de reset/game over automáticamente
 
 #### 2. **nes_py** (v8.2.1)
-- **Qué es**: Emulador NES en Python
-- **Función**: Ejecuta la ROM de Super Mario Bros y proporciona acceso a la RAM/estado del juego
-- **Características**:
+- Qué es: Emulador NES en Python
+- Función: Ejecuta la ROM de Super Mario Bros y proporciona acceso a la RAM/estado del juego
+- Características:
   - Emulación completa del NES
   - Acceso a memoria del juego
   - Renderizado de frames
 
 #### 3. **stable-baselines3** (v1.6.2)
-- **Qué es**: Biblioteca de algoritmos de Reinforcement Learning
-- **Función**: Implementa PPO y otros algoritmos RL listos para usar
-- **Características**:
+- Qué es: Biblioteca de algoritmos de Reinforcement Learning
+- Función: Implementa PPO y otros algoritmos RL listos para usar
+- Características:
   - Algoritmos optimizados y probados
   - Soporte para políticas basadas en CNNs (para imágenes)
   - Callbacks y logging integrados
   - Guardado/carga de modelos
 
 #### 4. **PyTorch** (v1.13.1)
-- **Qué es**: Framework de deep learning
-- **Función**: Proporciona la infraestructura para las redes neuronales
-- **Características**:
+- Qué es: Framework de deep learning
+- Función: Proporciona la infraestructura para las redes neuronales
+- Características:
   - Redes neuronales convolucionales (CNNs)
   - Cálculo automático de gradientes
   - Optimización de parámetros
   - Soporte para CPU y GPU
 
 #### 5. **gym** (v0.21.0)
-- **Qué es**: Estándar de OpenAI para entornos de RL
-- **Función**: Define la interfaz común entre agentes y entornos
-- **Características**:
+- Qué es: Estándar de OpenAI para entornos de RL
+- Función: Define la interfaz común entre agentes y entornos
+- Características:
   - API estándar: `reset()`, `step()`, `render()`
   - Wrappers para modificar entornos
 
@@ -150,10 +179,10 @@ Ajusta su política para tomar mejores decisiones en el futuro
 
 ### ¿Por qué PPO?
 
-- ✅ **Estable**: Menos propenso a "romperse" durante el entrenamiento
-- ✅ **Eficiente**: Aprende rápido con relativamente pocos datos
-- ✅ **Robusto**: Funciona bien en muchos entornos diferentes
-- ✅ **On-policy**: Aprende directamente de las interacciones actuales
+- Estable: Menos propenso a "romperse" durante el entrenamiento
+- Eficiente: Aprende rápido con relativamente pocos datos
+- Robusto: Funciona bien en muchos entornos diferentes
+- On-policy: Aprende directamente de las interacciones actuales
 
 ### Conceptos clave de PPO:
 
@@ -243,13 +272,13 @@ Usamos `SIMPLE_MOVEMENT` que proporciona 7 acciones:
 
 ```python
 [
-    ['NOOP'],           # 0: No hacer nada
-    ['right'],          # 1: Mover derecha
-    ['right', 'A'],     # 2: Mover derecha + saltar
-    ['right', 'B'],     # 3: Mover derecha + correr
-    ['right', 'A', 'B'],# 4: Mover derecha + saltar + correr
-    ['A'],              # 5: Saltar
-    ['left']            # 6: Mover izquierda
+    ['NOOP'],
+    ['right'],
+    ['right', 'A'],
+    ['right', 'B'],
+    ['right', 'A', 'B'],
+    ['A'],
+    ['left']
 ]
 ```
 
@@ -335,28 +364,6 @@ python scripts/rl_demo_mario.py --load mario_ppo_model.zip
 - Configuración rápida para pruebas
 - Parámetros: `n_steps=256`, `learning_rate=0.0003`
 
-### 2. `mario_rl_custom_rom.py`
-
-**Función**: Entrenar y jugar con ROMs personalizadas (ej: Mario invencible, cielo nocturno, etc.)
-
-**Uso básico:**
-```bash
-# Entrenar con ROM personalizada (default: 1000000 timesteps)
-python scripts/mario_rl_custom_rom.py roms/SuperMarioBros_star_infinite_20251028_231603.nes
-
-# Jugar con modelo entrenado
-python scripts/mario_rl_custom_rom.py roms/SuperMarioBros_star_infinite_20251028_231603.nes --load mario_invencible_model.zip
-```
-
-**Características:**
-- Permite usar cualquier ROM modificada
-- Corrige automáticamente el header de la ROM para compatibilidad
-- Hace backup y restauración automática de la ROM original
-- Parámetros según tutorial: `n_steps=512`, `learning_rate=0.000001`
-- Entrenamiento largo (1,000,000 timesteps) para mejor aprendizaje
-
-**IMPORTANTE**: Si usas una ROM modificada, debes **reentrenar** el modelo con esa ROM. Un modelo entrenado con ROM normal no sabe aprovechar las modificaciones (ej: invencibilidad).
-
 ---
 
 ## Configuración y Parámetros
@@ -388,28 +395,6 @@ PPO(
 )
 model.learn(total_timesteps=15000)  # Entrenamiento corto
 ```
-
-#### Configuración completa (`mario_rl_custom_rom.py`):
-```python
-PPO(
-    'CnnPolicy',
-    env,
-    n_steps=512,           # Más pasos por actualización (más estable)
-    learning_rate=0.000001,# Tasa muy baja (aprendizaje lento pero estable)
-    device="cpu"
-)
-model.learn(total_timesteps=1000000)  # Entrenamiento largo
-```
-
-### Diferencias entre configuraciones:
-
-| Parámetro | Rápida | Completa |
-|-----------|--------|----------|
-| **n_steps** | 256 | 512 |
-| **learning_rate** | 0.0003 | 0.000001 |
-| **total_timesteps** | 15,000 | 1,000,000 |
-| **Tiempo estimado** | ~1 min | ~24-48 horas |
-| **Calidad del modelo** | Básico | Avanzado |
 
 ---
 
@@ -468,24 +453,6 @@ model.update(experiences, advantages)
 - Repite pasos 3-5 hasta completar **total_timesteps**
 - Con 1,000,000 timesteps: ~1953 iteraciones completas
 
-### Qué aprende el agente en cada etapa:
-
-**Etapa inicial (0-10,000 timesteps):**
-- Aprende conceptos básicos: "mover derecha avanza"
-- Muere frecuentemente
-- Recompensa: -50 a 100
-
-**Etapa intermedia (10,000-100,000 timesteps):**
-- Aprende a saltar sobre obstáculos pequeños
-- Sobrevive más tiempo
-- Recompensa: 200-500
-
-**Etapa avanzada (100,000-1,000,000 timesteps):**
-- Aprende estrategias complejas
-- Evita enemigos eficientemente
-- Completa niveles
-- Recompensa: 1000-5000+
-
 ---
 
 ## Métricas de Entrenamiento
@@ -523,27 +490,19 @@ Durante el entrenamiento, PPO muestra estas métricas:
 - **value_loss**: Pérdida del valor estimado
   - Mide qué tan bien estima recompensas futuras
 
-### Interpretación:
-
-Un entrenamiento saludable muestra:
-- ✅ `loss` disminuyendo gradualmente
-- ✅ `explained_variance` acercándose a 1
-- ✅ `entropy_loss` disminuyendo (política se hace más segura)
-- ✅ `approx_kl` en rango razonable (no demasiado alto)
-
 ---
 
 ## Resultados Esperados
 
 ### Con entrenamiento corto (15,000 timesteps):
-- ⏱️ Tiempo: ~1-2 minutos
-- 🎮 Resultado: Aprende movimientos básicos
-- ⚠️ Limitaciones: No salta obstáculos consistentemente, muere frecuentemente
+- Tiempo: ~1-2 minutos
+- Resultado: Aprende movimientos básicos
+- Limitaciones: No salta obstáculos consistentemente, muere frecuentemente
 
 ### Con entrenamiento completo (1,000,000 timesteps):
-- ⏱️ Tiempo: ~24-48 horas (depende del hardware)
-- 🎮 Resultado: Juega de forma competente
-- ✅ Habilidades aprendidas:
+- Tiempo: ~24-48 horas (depende del hardware)
+- Resultado: Juega de forma competente
+- Habilidades aprendidas:
   - Saltar sobre enemigos
   - Evitar obstáculos
   - Avanzar eficientemente
@@ -587,12 +546,6 @@ if isinstance(action, np.ndarray):
     action = int(action.item())
 ```
 
-### 4. Header de ROM
-
-**Problema**: `nes_py` requiere que bytes  aventurero15 del header sean cero.
-
-**Solución**: Corrección automática del header antes de usar la ROM.
-
 ---
 
 ## Casos de Uso
@@ -617,16 +570,16 @@ python scripts/mario_rl_custom_rom.py roms/SuperMarioBros_star_infinite_20251028
 ## Consideraciones Finales
 
 ### Ventajas de este enfoque:
-- ✅ No requiere datos de entrenamiento pre-etiquetados
-- ✅ El agente aprende explorando por sí mismo
-- ✅ Puede descubrir estrategias no obvias
-- ✅ Funciona con cualquier ROM (con reentrenamiento)
+- No requiere datos de entrenamiento pre-etiquetados
+- El agente aprende explorando por sí mismo
+- Puede descubrir estrategias no obvias
+- Funciona con cualquier ROM (con reentrenamiento)
 
 ### Limitaciones:
-- ⏱️ Entrenamiento requiere mucho tiempo
-- 💻 Consume recursos computacionales significativos
-- 🎯 Requiere ajuste fino de hiperparámetros para mejores resultados
-- 🎮 La calidad depende mucho del tiempo de entrenamiento
+- El entrenamiento requiere mucho tiempo
+- Consume recursos computacionales significativos
+- Requiere ajuste fino de hiperparámetros para mejores resultados
+- La calidad depende mucho del tiempo de entrenamiento
 
 ### Mejoras posibles:
 - Usar GPU para acelerar entrenamiento

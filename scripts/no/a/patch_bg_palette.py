@@ -1,31 +1,26 @@
 #!/usr/bin/env python3
 """
 patch_bg_palette.py
-Objetivo: oscurecer el cielo / ambiente del nivel estilo "modo noche"
-sin tocar Mario ni enemigos.
+Goal: darken the level sky/background (night-like) without changing Mario or enemies.
 
-Cómo funciona:
-1. Busca bloques de 16 bytes que tengan pinta de paletas de background:
-   - 4 subpaletas x 4 colores = 16 bytes
-   - patrón común en SMB: cada subpaleta termina en 0x0F (negro)
-   - el primer color de cada subpaleta suele repetirse (cielo base tipo 0x22)
+How it works:
+1) Scan for 16-byte blocks that look like background palettes:
+   - 4 sub-palettes x 4 colors = 16 bytes
+   - common in SMB: each sub-palette ends in 0x0F (black)
+   - the first color often repeats (sky base like 0x22)
 
-2. Modo scan:
+2) Scan mode:
    python3 patch_bg_palette.py --scan
+   -> prints ROM offsets of candidate BG palettes.
 
-   -> imprime offsets de ROM donde parece haber paletas BG.
-
-3. Modo patch:
+3) Patch mode:
    python3 patch_bg_palette.py --orig 0x22 --new 0x02
-   Esto reemplaza 0x22 por 0x02 dentro de esos bloques candidatos
-   y escribe una ROM nueva (oscurece el fondo tipo noche).
+   Replaces 0x22 with 0x02 within candidate blocks and writes a new ROM.
 
-Truco:
- - 0x22 es azul/celeste claro típico cielo
- - 0x02 es azul más oscuro
- - 0x0F es negro
-
-Podés ir cambiando --new según lo que quieras (0x0F = negro total).
+Hints:
+ - 0x22: light blue (sky)
+ - 0x02: darker blue
+ - 0x0F: black
 """
 
 import os
@@ -37,25 +32,23 @@ ROM_IN = "roms/SuperMarioBros.nes"
 def looks_like_bg_palette(block):
     """
     block: 16 bytes
-    Heurística muy simple:
-    - Cada subpaleta de 4 termina con algo oscuro tipo 0x0F (muy común en SMB)
-    - El primer byte de cada subpaleta muchas veces se repite entre subpaletas (ej 0x22,0x22,0x22,...)
-    Esto no es perfecto pero suele clavar las paletas del cielo/suelo.
+    Simple heuristic:
+    - Each 4-byte sub-palette ends with a dark entry like 0x0F
+    - First byte of each sub-palette often repeats (e.g., 0x22)
+    This is not perfect but usually catches sky/ground palettes.
     """
     if len(block) != 16:
         return False
 
     subs = [block[i:i+4] for i in range(0,16,4)]
-    # chequeo: último color de cada subpaleta es 0x0F o algo <0x10 (muy oscuro)
+    # last color of each sub-palette is commonly dark (0x0F)
     for sub in subs:
         if len(sub) < 4: return False
         if sub[3] not in (0x0F, 0x00, 0x10, 0x20, 0x30):
-            # 0x0F es super típico, pero dejo tolerancia
             return False
 
-    # chequeo: primer byte de cada subpaleta suele ser igual o muy parecido
+    # first byte of each sub-palette tends to be equal or close
     firsts = [sub[0] for sub in subs]
-    # tolero variación de +/-1 entre ellos
     if not (max(firsts) - min(firsts) <= 2):
         return False
 
@@ -86,14 +79,13 @@ def patch_palettes(rom_bytes, orig_val, new_val, candidates):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--scan", action="store_true",
-                    help="solo listar posibles paletas BG")
-    ap.add_argument("--orig", help="valor original (ej 0x22)")
-    ap.add_argument("--new",  help="valor nuevo (ej 0x02)")
+    ap.add_argument("--scan", action="store_true", help="only list candidate BG palettes")
+    ap.add_argument("--orig", help="original value (e.g., 0x22)")
+    ap.add_argument("--new",  help="new value (e.g., 0x02)")
     args = ap.parse_args()
 
     if not os.path.exists(ROM_IN):
-        print(f"❌ No se encontró {ROM_IN}")
+        print(f"Not found: {ROM_IN}")
         return
 
     with open(ROM_IN,"rb") as f:
@@ -101,27 +93,25 @@ def main():
 
     cands = scan_palettes(rom)
 
-    print("🔎 Posibles paletas BG encontradas:")
-    for off, block in cands[:20]:  # mostramos primeras 20 por prolijidad
+    print("Candidate BG palettes:")
+    for off, block in cands[:20]:
         pretty = " ".join(f"{b:02X}" for b in block)
         print(f"  offset 0x{off:06X}: {pretty}")
-    print(f"Total candidatos: {len(cands)}")
+    print(f"Total candidates: {len(cands)}")
     print()
 
     if args.scan:
-        # solo exploración, no parcheamos
         return
 
-    # si no es --scan, esperamos --orig y --new
     if args.orig is None or args.new is None:
-        print("ℹ Si querés parchear, usá --orig 0x22 --new 0x02 (por ejemplo)")
+        print("For patching use: --orig 0x22 --new 0x02 (example)")
         return
 
     def parse_hexish(s):
         s = s.strip().lower()
         if s.startswith("0x"):
             return int(s,16)
-        return int(s,16)  # igual interpretamos hex
+        return int(s,16)
     orig_val = parse_hexish(args.orig)
     new_val  = parse_hexish(args.new)
 
@@ -132,10 +122,9 @@ def main():
     with open(out_path,"wb") as f:
         f.write(rom_mod)
 
-    print(f"✅ ROM parcheada escrita en: {out_path}")
-    print(f"   Reemplazos hechos en {hits} bloques de paletas.")
-    print("👉 Probá esa ROM en el emulador: si el cielo de 1-1 está oscuro tipo 'nivel 2', ganamos.")
-    print("   Si cambió otra cosa rara (suelo raro, etc.), probamos otro new_val (0x0F negro total, 0x02 azul oscuro, 0x10 violeta oscuro NES).")
+    print(f"Patched ROM written to: {out_path}")
+    print(f"Replacements applied in {hits} palette blocks.")
+    print("Load the ROM in the emulator; if 1-1 sky is darker, it worked.")
 
 if __name__ == "__main__":
     main()

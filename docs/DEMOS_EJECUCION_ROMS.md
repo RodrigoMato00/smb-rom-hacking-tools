@@ -179,9 +179,3 @@ python scripts/main.py \
 ```
 
 ---
-
-## Sugerencia de uso en vivo
-
-- Abrí una terminal, corré la preparación una vez (cd + activate) y luego copiá/pegá los comandos según la demo.
-- Mostrá primero la ROM base, luego la sección CHR (más roto → menos roto), Modo Noche y cerrá con las variantes de Goomba.
-- Si alguna ROM cambió de timestamp, sólo reemplazá el nombre en el comando (la ruta base no cambia).

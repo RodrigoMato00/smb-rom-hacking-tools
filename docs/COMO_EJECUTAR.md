@@ -2,19 +2,22 @@
 
 ## Prerrequisitos
 
-### Entorno Virtual
+### Entorno Virtual (Emulador y Parches)
 ```bash
+# Python recomendado para emulador/patches: 3.13
+python3 -V  # debe ser 3.13.x
+
 # Activar entorno virtual
 source venv/bin/activate
 ```
 
 ### Dependencias Instaladas
-- **pyntendo** - Emulador NES
+- **pyntendo** (emulador NES local) — instalar con `pip install -e ./depends/pyntendo-repo`
 - **pygame** - Interfaz gráfica y controles
 - **pyaudio** - Audio (requiere PortAudio instalado)
 - **Cython** - Dependencia de pyntendo
 
-## Ejecutar el Emulador
+## Ejecutar el Emulador (3.13)
 
 ### Comando Básico
 ```bash
@@ -96,19 +99,21 @@ pip install pyaudio
 ### Dependencias Faltantes
 ```bash
 pip install -r requirements.txt
+pip install -e ./depends/pyntendo-repo
 ```
+
+## Entorno de IA (Python 3.8)
+- Para `scripts/rl_demo_mario.py`, se recomienda un venv separado con **Python 3.8** y dependencias fijadas.
+- Ver comandos en el README (sección “Demo de IA”).
 
 ## Estructura del Proyecto
 
 ```
 charla/
-├── disassembly/            # Desensamblados y assets de ASM/65xx
-├── roms/                   # ROMs del juego
+├── roms/                    # ROMs del juego
 │   └── SuperMarioBros.nes
-├── scripts/                # Scripts de Python soportados
-│   ├── main.py             # Emulador (pasar ROM por argumento)
-│   ├── patch_*.py          # Scripts de modificación
-│   └── rl_demo_mario.py     # Demo RL
-├── venv/                   # Entorno virtual
+├── scripts/                 # Scripts de Python
+│   └── main.py             # Archivo principal del emulador
+├── venv/                   # Entorno virtual (3.13)
 └── requirements.txt        # Dependencias
 ```

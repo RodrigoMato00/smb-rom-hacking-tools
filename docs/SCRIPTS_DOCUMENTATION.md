@@ -4,7 +4,7 @@ Este documento describe los scripts principales para modificar Super Mario Bros 
 
 > Scripts soportados: `patch_sky_night.py`, `patch_mario_palette.py`, `patch_chr_range.py`, `patch_star_permanent.py`, `patch_title_message.py`, `main.py`, `rl_demo_mario.py`.
 
-## 📋 Índice
+## Índice
 
 1. [patch_sky_night.py](#patch_sky_palette_finalpy) - Modificar cielo para efecto noche
 2. [patch_mario_palette.py](#patch_mario_fullpy) - Crear skins personalizados de Mario
@@ -46,13 +46,13 @@ python3 scripts/patch_sky_night.py roms/mi_rom.nes
 
 ### Ejemplo de Salida
 ```
-📍 BackgroundColors en offset 0x0005DF (CPU $85cf)
-🔍 Colores actuales: 22 22 0F 0F
-✅ Cambios aplicados:
+BackgroundColors en offset 0x0005DF (CPU $85cf)
+Colores actuales: 22 22 0F 0F
+Cambios aplicados:
    Primer cielo: 0x22 → 0x0F
    Segundo cielo: 0x22 → 0x0F
-💾 ROM nueva creada: roms/SuperMarioBros_sky_night_20251029_123456.nes
-🌙 El cielo del nivel 1-1 ahora está oscuro!
+ROM nueva creada: roms/SuperMarioBros_sky_night_20251029_123456.nes
+El cielo del nivel 1-1 ahora está oscuro.
 ```
 
 ---
@@ -97,16 +97,16 @@ python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x37 --c2 0x0F --c3 0x16
 
 ### Ejemplo de Salida
 ```
-🔎 Encontradas 3 apariciones de la paleta Mario original
+Encontradas 3 apariciones de la paleta Mario original
    Paleta original: [34, 22, 39, 24]
    Nueva paleta: [22, 48, 15, 21]
 
-   📍 Offset 0x05D7: [34, 22, 39, 24] → [34, 48, 15, 21]
-   📍 Offset 0x0CB7: [34, 22, 39, 24] → [34, 48, 15, 21]
-   📍 Offset 0x0CDB: [34, 22, 39, 24] → [34, 48, 15, 21]
+   Offset 0x05D7: [34, 22, 39, 24] → [34, 48, 15, 21]
+   Offset 0x0CB7: [34, 22, 39, 24] → [34, 48, 15, 21]
+   Offset 0x0CDB: [34, 22, 39, 24] → [34, 48, 15, 21]
 
-✅ ROM modificada escrita en: roms/SuperMarioBros_mario_full_22_30_0F_15_20251029_123456.nes
-🎯 Skin de Mario creado con:
+ROM modificada escrita en: roms/SuperMarioBros_mario_full_22_30_0F_15_20251029_123456.nes
+Skin de Mario creado con:
    Piel:      0x22
    Gorra:     0x30
    Contorno:  0x0F
@@ -158,9 +158,9 @@ python3 scripts/patch_chr_range.py --start 480 --count 32
 
 ### Ejemplo de Salida
 ```
-✅ ROM mutada parcialmente: roms/SuperMarioBros_CHR_1E0_020_20251029_123456.nes
+ROM mutada parcialmente: roms/SuperMarioBros_CHR_1E0_020_20251029_123456.nes
    Tiles modificados: 0x1e0 .. 0x1ff
-👉 Cargá esa ROM y mirá el Goomba del 1-1.
+Cargá esa ROM y mirá el Goomba del 1-1.
 ```
 
 ---
@@ -207,16 +207,16 @@ python3 scripts/patch_star_permanent.py roms/mi_rom.nes
 Antes del parche en 0xd88d:
   opcode=0xf0 arg=0x06
 Aplicado parche: BEQ -> NOP,NOP
-✅ ROM hackeada escrita en: roms/SuperMarioBros_star_infinite_20251029_123456.nes
-➡ Esta ROM debería hacer que, al tocar un Goomba, el Goomba muera siempre,
-   y Mario no reciba daño nunca (efecto estrella permanente).
+ROM hackeada escrita en: roms/SuperMarioBros_star_infinite_20251029_123456.nes
+Esta ROM debería hacer que, al tocar un Goomba, el Goomba muera siempre,
+y Mario no reciba daño nunca (efecto estrella permanente).
 ```
 
 ### Efectos del Hack
-- ✅ **Mario invencible**: Nunca recibe daño al tocar enemigos
-- ✅ **Enemigos mueren**: Al tocar Mario, todos los enemigos mueren instantáneamente
-- ✅ **Efecto permanente**: No necesitas recoger estrellas, el efecto está siempre activo
-- ✅ **Compatible**: Funciona con todos los tipos de enemigos (Goombas, Koopas, etc.)
+- Mario invencible: Nunca recibe daño al tocar enemigos
+- Enemigos mueren: Al tocar Mario, todos los enemigos mueren instantáneamente
+- Efecto permanente: No necesitas recoger estrellas, el efecto está siempre activo
+- Compatible: Funciona con todos los tipos de enemigos (Goombas, Koopas, etc.)
 
 ---
 
@@ -259,10 +259,10 @@ python3 scripts/main.py roms/SuperMarioBros.nes --sync-mode 1
 
 ### Ejemplo de Salida
 ```
-✅ Emulador NES iniciado
-🎮 Cargando ROM: roms/SuperMarioBros.nes
-🔄 Modo de sincronización: 2
-▶️ Ejecutando ROM...
+Emulador NES iniciado
+Cargando ROM: roms/SuperMarioBros.nes
+Modo de sincronización: 2
+Ejecutando ROM...
 ```
 
 ### Modos de Sincronización
@@ -271,10 +271,10 @@ python3 scripts/main.py roms/SuperMarioBros.nes --sync-mode 1
 - **Modo 3**: Sincronización precisa (para análisis)
 
 ### Casos de Uso
-- ✅ **Probar modificaciones**: Ejecutar ROMs modificadas por los scripts
-- ✅ **Comparar resultados**: Alternar entre ROM original y modificada
-- ✅ **Desarrollo**: Probar cambios en tiempo real
-- ✅ **Debugging**: Verificar que las modificaciones funcionan correctamente
+- Probar modificaciones: Ejecutar ROMs modificadas por los scripts
+- Comparar resultados: Alternar entre ROM original y modificada
+- Desarrollo: Probar cambios en tiempo real
+- Debugging: Verificar que las modificaciones funcionan correctamente
 
 ### Requisitos
 - **Biblioteca `nes`**: Instalada en el entorno Python
@@ -314,10 +314,10 @@ python3 scripts/patch_title_message.py roms/mi_rom.nes
 
 ### Ejemplo de Salida
 ```
-✅ Encontré 'WORLD  TIME' en offset 0x000123
-💾 ROM nueva creada: roms/SuperMarioBros_titlemsg_20251029_123456.nes
-🔁 Esa ROM debería mostrar tu texto custom en el lugar donde iba 'WORLD  TIME' en la pantalla de título.
-👉 Eso sirve perfecto para la demo: queda el mensaje 'PYTHON MEETUP MVD' en pantalla principal.
+Encontré 'WORLD  TIME' en offset 0x000123
+ROM nueva creada: roms/SuperMarioBros_titlemsg_20251029_123456.nes
+Esa ROM debería mostrar tu texto custom en el lugar donde iba 'WORLD  TIME' en la pantalla de título.
+Eso sirve para la demo: queda el mensaje 'PYTHON MEETUP MVD' en pantalla principal.
 ```
 
 ### Mapeo de Caracteres
@@ -336,10 +336,10 @@ El script incluye un mapeo de caracteres a tiles NES:
 - **D**: `0x0d`
 
 ### Casos de Uso
-- ✅ **Personalización**: Cambiar el texto del título para eventos especiales
-- ✅ **Branding**: Agregar mensajes personalizados al juego
-- ✅ **Demostraciones**: Mostrar modificaciones en presentaciones
-- ✅ **Eventos**: Crear ROMs especiales para meetups o conferencias
+- Personalización: Cambiar el texto del título para eventos especiales
+- Branding: Agregar mensajes personalizados al juego
+- Demostraciones: Mostrar modificaciones en presentaciones
+- Eventos: Crear ROMs especiales para meetups o conferencias
 
 ### Notas Importantes
 - **Mapeo de tiles**: Los valores de los caracteres necesitan ser verificados con la ROM específica
@@ -382,12 +382,12 @@ python scripts/rl_demo_mario.py --load mario_ppo_model.zip --seconds 30
 
 ### Salida esperada
 ```
-🏋️ Entrenando PPO (10000 timesteps)...
+Entrenando PPO (10000 timesteps)...
 ... métricas de SB3 ...
-💾 Modelo guardado en: mario_ppo_model.zip
-⏱️ Tiempo de entrenamiento: 65.2s
-🎮 Jugando 20s...
-✅ Listo. Pasos jugados: 2100, ciclos completados: 1
+Modelo guardado en: mario_ppo_model.zip
+Tiempo de entrenamiento: 65.2s
+Jugando 20s...
+Listo. Pasos jugados: 2100, ciclos completados: 1
 ```
 
 ### Notas
@@ -413,7 +413,7 @@ python scripts/rl_demo_mario.py --load mario_ppo_model.zip --seconds 30
 
 ---
 
-## 🔧 Requisitos Técnicos
+## Requisitos Técnicos
 
 ### Archivos Necesarios:
 - `roms/SuperMarioBros.nes` (ROM original)
@@ -438,7 +438,7 @@ charla/
 
 ---
 
-## 🚀 Flujo de Trabajo Recomendado
+## Flujo de Trabajo Recomendado
 
 1. **Copia de seguridad**: Siempre mantén una copia de `SuperMarioBros.nes`
 2. **Modificaciones incrementales**: Usa ROMs específicas para cada modificación
@@ -471,7 +471,7 @@ python3 scripts/main.py roms/SuperMarioBros_titlemsg_20251029_123456.nes
 
 ---
 
-## 📝 Notas Importantes
+## Notas Importantes
 
 - **Backup**: Siempre mantén copias de seguridad de tus ROMs originales
 - **Compatibilidad**: Estos scripts están diseñados específicamente para Super Mario Bros (NES)
@@ -479,5 +479,3 @@ python3 scripts/main.py roms/SuperMarioBros_titlemsg_20251029_123456.nes
 - **Experimentación**: Los colores pueden variar según el emulador y configuración de paleta
 
 ---
-
-*Documentación generada para el proyecto de modificación de Super Mario Bros*

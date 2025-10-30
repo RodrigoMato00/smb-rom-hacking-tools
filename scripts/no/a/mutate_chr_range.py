@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 mutate_chr_range.py
-Igual que mutate_chr_global, pero solo modifica un rango de tiles CHR.
-Ajustá TILE_START y TILE_COUNT hasta que cambie el Goomba
-sin destruir TODO lo demás.
+Like a global CHR mutation but only for a tile range.
+Adjust TILE_START and TILE_COUNT until target graphics change
+without destroying unrelated tiles.
 """
 
 import os
@@ -11,10 +11,10 @@ from datetime import datetime
 
 ROM_IN  = "roms/SuperMarioBros.nes"
 
-TILE_SIZE = 16  # 16 bytes por tile
-# 🔧 Ajustá estos dos para probar distintos rangos:
-TILE_START = 0x1E0   # 480 decimal (Goomba aquí, pero rompe todo)
-TILE_COUNT = 0x20    # 32 tiles → cubre 0x1E0..0x1FF
+TILE_SIZE = 16  # 16 bytes per tile
+# Adjust these to test ranges
+TILE_START = 0x1E0   # 480 decimal
+TILE_COUNT = 0x20    # 32 tiles → covers 0x1E0..0x1FF
 
 def swap_01_10_in_tile(tile_bytes):
     p0 = list(tile_bytes[0:8])  # plane0
@@ -37,7 +37,7 @@ def swap_01_10_in_tile(tile_bytes):
             elif bit1 == 1 and bit0 == 0:
                 nb1, nb0 = 0, 1   # 10 -> 01
             else:
-                nb1, nb0 = bit1, bit0  # 00 o 11 igual
+                nb1, nb0 = bit1, bit0  # 00 or 11 unchanged
 
             if nb0:
                 out_b0 |= mask
@@ -51,15 +51,15 @@ def swap_01_10_in_tile(tile_bytes):
 
 def main():
     if not os.path.exists(ROM_IN):
-        print(f"❌ No se encontró {ROM_IN}")
+        print(f"Not found: {ROM_IN}")
         return
 
     with open(ROM_IN, "rb") as f:
         rom = bytearray(f.read())
 
-    # validar header iNES
+    # validate iNES header
     if rom[0:4] != b"NES\x1a":
-        print("❌ No parece iNES.")
+        print("Not a valid iNES file.")
         return
 
     prg_banks = rom[4]
@@ -79,16 +79,16 @@ def main():
     end_byte   = start_byte + TILE_COUNT * TILE_SIZE
 
     if end_byte > len(chr_data):
-        print("❌ Rango excede CHR. Ajustá TILE_START/TILE_COUNT.")
+        print("Range exceeds CHR. Adjust TILE_START/TILE_COUNT.")
         return
 
-    # mutar solo el rango elegido
+    # mutate only the selected range
     for tile_index in range(TILE_START, TILE_START + TILE_COUNT):
         off = tile_index * TILE_SIZE
         tile = chr_data[off:off+TILE_SIZE]
         chr_data[off:off+TILE_SIZE] = swap_01_10_in_tile(tile)
 
-    # rearmar ROM
+    # rebuild ROM
     new_rom = bytearray()
     new_rom += rom[:chr_start]
     new_rom += chr_data
@@ -99,11 +99,9 @@ def main():
     with open(out_path, "wb") as f:
         f.write(new_rom)
 
-    print("✅ ROM escrita:", out_path)
+    print("Modified ROM:", out_path)
     print("   TILE_START =", hex(TILE_START), "TILE_COUNT =", hex(TILE_COUNT))
-    print("👉 Cargala y mirá si:")
-    print("   - El Goomba sigue mutante ✅")
-    print("   - Mario/HUD/piso ya no están tan destruidos 🙏")
+    print("Load and verify target graphics changed while unrelated assets remain stable.")
 
 if __name__ == "__main__":
     main()
