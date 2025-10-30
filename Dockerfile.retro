@@ -1,0 +1,44 @@
+FROM ubuntu:20.04
+
+# Configurar zona horaria para evitar prompts interactivos
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
+
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    python3.8 \
+    python3.8-dev \
+    python3-pip \
+    build-essential \
+    cmake \
+    git \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear enlace simbólico para python
+RUN ln -s /usr/bin/python3.8 /usr/bin/python
+
+# Instalar pip y dependencias de Python
+RUN python -m pip install --upgrade pip
+RUN pip install setuptools==59.8.0 setuptools-scm==6.4
+
+# Clonar Retro Lab directamente desde GitHub
+RUN git clone --recursive https://github.com/openai/retro.git /app/retro
+WORKDIR /app/retro
+
+# Instalar Retro Lab
+RUN pip install --no-use-pep517 -e .
+
+# Copiar ROMs
+COPY roms/ /app/roms/
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Comando por defecto
+CMD ["python", "-c", "import retro; print('Retro Lab instalado correctamente!')"]
