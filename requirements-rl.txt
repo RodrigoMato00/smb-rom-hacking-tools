@@ -1,0 +1,14 @@
+# Reinforcement Learning requirements (Python 3.8)
+# Use: python3.8 -m venv venv38 && source venv38/bin/activate
+#      pip install -r requirements-rl.txt
+
+pip<24.1
+# Core RL stack
+gym==0.21.0
+nes_py==8.2.1
+gym_super_mario_bros==7.3.0
+stable-baselines3==1.6.2
+# Torch stack (Apple Silicon wheels available)
+torch==1.13.1
+torchvision==0.14.1
+torchaudio==0.13.1

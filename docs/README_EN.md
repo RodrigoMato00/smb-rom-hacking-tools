@@ -89,3 +89,11 @@ charla/
 2. Try the scripts in `SCRIPTS_DOCUMENTATION.md`
 3. Experiment with different modifications
 4. Build your custom ROMs
+
+### RL Demo (Python 3.8)
+Install pinned dependencies from `requirements-rl.txt`:
+```bash
+python3.8 -m venv venv38
+source venv38/bin/activate
+pip install -r requirements-rl.txt
+```
