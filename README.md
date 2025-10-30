@@ -44,19 +44,15 @@ python3 scripts/patch_star_permanent.py
 python3 scripts/main.py roms/SuperMarioBros_sky_night_YYYYMMDD_HHMMSS.nes
 ```
 
-### Demo de IA (entorno Python 3.8 separado)
+## Demo de IA (entorno Python 3.8 separado)
 ```bash
 # Requiere tener Python 3.8 instalado (ej.: pyenv, o python3.8 del sistema)
 python3.8 -V         # Debe decir 3.8.x
 python3.8 -m venv venv38
 source venv38/bin/activate
 
-# pip 24.0 para instalar gym==0.21.0
-pip install 'pip<24.1'
-
-# Dependencias RL compatibles
-pip install gym==0.21.0 nes_py==8.2.1 gym_super_mario_bros==7.3.0 stable-baselines3==1.6.2
-pip install torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1
+# Instalar dependencias RL pinneadas
+pip install -r requirements-rl.txt
 
 # Correr demo (entrena breve y juega 5s)
 python3 scripts/rl_demo_mario.py --seconds 5 --timesteps 1000

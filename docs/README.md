@@ -9,6 +9,14 @@ Este directorio contiene toda la documentación técnica del proyecto de modific
 
 Comandos rápidos para crear entornos y ejecutar están en el README principal (sección “Inicio Rápido” y “Demo de IA”).
 
+### Demo de IA (Python 3.8)
+Usar `requirements-rl.txt` para instalar dependencias pinneadas:
+```bash
+python3.8 -m venv venv38
+source venv38/bin/activate
+pip install -r requirements-rl.txt
+```
+
 ## Archivos de Documentación
 
 ### Scripts y Herramientas

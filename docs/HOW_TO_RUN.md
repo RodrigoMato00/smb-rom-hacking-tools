@@ -104,7 +104,16 @@ pip install -e ./depends/pyntendo-repo
 
 ## AI Environment (Python 3.8)
 - For `scripts/rl_demo_mario.py`, use a separate venv with **Python 3.8** and pinned dependencies.
-- See the main README ("RL Demo" section) for commands.
+- Install from `requirements-rl.txt`:
+```bash
+python3.8 -m venv venv38
+source venv38/bin/activate
+pip install -r requirements-rl.txt
+```
+- Then run a quick test:
+```bash
+python3 scripts/rl_demo_mario.py --seconds 5 --timesteps 1000
+```
 
 ## Project Structure
 
