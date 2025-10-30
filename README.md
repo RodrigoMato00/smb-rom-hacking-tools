@@ -5,15 +5,12 @@ Este proyecto contiene herramientas para modificar Super Mario Bros (NES) y crea
 ## 🚀 Inicio Rápido
 
 ### Requisitos
-- Python 3.6+
+- Python 3.8 (no fue mi primer eleccion, es porque me daba problemas con la version 3.13 y 3.14 con el gym_retro de openai)
 - Biblioteca `nes` instalada
 - ROM original de Super Mario Bros
 
 ### Instalación
 ```bash
-# Clonar el repositorio
-git clone [url-del-repo]
-cd charla
 
 # Instalar dependencias
 pip install -r requirements.txt
@@ -27,13 +24,13 @@ pip install -r requirements.txt
 ### Uso Básico
 ```bash
 # Crear ROM con cielo nocturno
-python3 scripts/patch_sky_palette_final.py
+python3 scripts/patch_sky_night.py
 
 # Crear skin personalizado de Mario
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
 
 # Hacer a Mario invencible
-python3 scripts/patch_star_invincible.py
+python3 scripts/patch_star_permanent.py
 
 # Probar ROM modificada
 python3 scripts/main.py roms/SuperMarioBros_sky_night_20251029_123456.nes
@@ -52,11 +49,11 @@ Toda la documentación técnica está disponible en el directorio [`docs/`](docs
 
 | Script | Descripción |
 |--------|-------------|
-| `patch_sky_palette_final.py` | Modificar cielo para efecto noche |
-| `patch_mario_full.py` | Crear skins personalizados de Mario |
-| `mutate_chr_range_args.py` | Mutar tiles específicos en CHR-ROM |
-| `patch_star_invincible.py` | Hacer a Mario invencible permanentemente |
-| `patch_title_text.py` | Modificar texto del título del juego |
+| `patch_sky_night.py` | Modificar cielo para efecto noche |
+| `patch_mario_palette.py` | Crear skins personalizados de Mario |
+| `patch_chr_range.py` | Mutar tiles específicos en CHR-ROM |
+| `patch_star_permanent.py` | Hacer a Mario invencible permanentemente |
+| `patch_title_message.py` | Modificar texto del título del juego |
 | `main.py` | Emulador NES para probar ROMs modificadas |
 
 ## 📁 Estructura del Proyecto
@@ -84,25 +81,25 @@ charla/
 
 ### Cielo Nocturno
 ```bash
-python3 scripts/patch_sky_palette_final.py
+python3 scripts/patch_sky_night.py
 # Resultado: ROM con cielo oscuro estilo noche
 ```
 
 ### Mario Zombie
 ```bash
-python3 scripts/patch_mario_full.py --c0 0x29 --c1 0x15 --c2 0x0F --c3 0x27
+python3 scripts/patch_mario_palette.py --c0 0x29 --c1 0x15 --c2 0x0F --c3 0x27
 # Resultado: Mario con colores zombie (piel verde, ropa oscura)
 ```
 
 ### Mario Invencible
 ```bash
-python3 scripts/patch_star_invincible.py
+python3 scripts/patch_star_permanent.py
 # Resultado: Mario nunca recibe daño, mata enemigos al tocarlos
 ```
 
 ### Texto Personalizado del Título
 ```bash
-python3 scripts/patch_title_text.py
+python3 scripts/patch_title_message.py
 # Resultado: Cambia "WORLD  TIME" por "PYTHON MEETUP MVD" en la pantalla de título
 ```
 

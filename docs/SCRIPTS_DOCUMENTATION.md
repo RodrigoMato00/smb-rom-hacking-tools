@@ -2,18 +2,21 @@
 
 Este documento describe los scripts principales para modificar Super Mario Bros (NES) desarrollados en este proyecto.
 
+> Scripts soportados: `patch_sky_night.py`, `patch_mario_palette.py`, `patch_chr_range.py`, `patch_star_permanent.py`, `patch_title_message.py`, `main.py`, `rl_demo_mario.py`.
+
 ## 📋 Índice
 
-1. [patch_sky_palette_final.py](#patch_sky_palette_finalpy) - Modificar cielo para efecto noche
-2. [patch_mario_full.py](#patch_mario_fullpy) - Crear skins personalizados de Mario
-3. [mutate_chr_range_args.py](#mutate_chr_range_argspy) - Mutar tiles específicos en CHR-ROM
-4. [patch_star_invincible.py](#patch_star_invinciblepy) - Hacer a Mario invencible permanentemente
+1. [patch_sky_night.py](#patch_sky_palette_finalpy) - Modificar cielo para efecto noche
+2. [patch_mario_palette.py](#patch_mario_fullpy) - Crear skins personalizados de Mario
+3. [patch_chr_range.py](#mutate_chr_range_argspy) - Mutar tiles específicos en CHR-ROM
+4. [patch_star_permanent.py](#patch_star_invinciblepy) - Hacer a Mario invencible permanentemente
 5. [main.py](#mainpy) - Emulador NES para probar ROMs modificadas
-6. [patch_title_text.py](#patch_title_textpy) - Modificar texto del título del juego
+6. [patch_title_message.py](#patch_title_textpy) - Modificar texto del título del juego
+7. [rl_demo_mario.py](#mario_rl_runpy) - Entrenar PPO y jugar con AI
 
 ---
 
-## patch_sky_palette_final.py
+## patch_sky_night.py
 
 ### Descripción
 Modifica específicamente los colores del cielo en Super Mario Bros para crear un efecto de "modo noche". Basado en el análisis del assembler, modifica `BackgroundColors` en la dirección `0x85cf`.
@@ -27,7 +30,7 @@ Modifica específicamente los colores del cielo en Super Mario Bros para crear u
 
 #### Sin parámetros (crea nueva ROM):
 ```bash
-python3 scripts/patch_sky_palette_final.py
+python3 scripts/patch_sky_night.py
 ```
 - Lee: `roms/SuperMarioBros.nes`
 - Crea: `SuperMarioBros_sky_night_YYYYMMDD_HHMMSS.nes`
@@ -35,7 +38,7 @@ python3 scripts/patch_sky_palette_final.py
 
 #### Con parámetros (sobreescribe ROM):
 ```bash
-python3 scripts/patch_sky_palette_final.py roms/mi_rom.nes
+python3 scripts/patch_sky_night.py roms/mi_rom.nes
 ```
 - Lee: `roms/mi_rom.nes`
 - Sobreescribe: `roms/mi_rom.nes`
@@ -54,7 +57,7 @@ python3 scripts/patch_sky_palette_final.py roms/mi_rom.nes
 
 ---
 
-## patch_mario_full.py
+## patch_mario_palette.py
 
 ### Descripción
 Modifica la paleta completa de Mario (los 4 bytes de color) para crear "skins" personalizados. Reemplaza la paleta original `[0x22, 0x16, 0x27, 0x18]` en todas sus apariciones en la ROM.
@@ -66,7 +69,7 @@ Modifica la paleta completa de Mario (los 4 bytes de color) para crear "skins" p
 
 ### Uso
 ```bash
-python3 scripts/patch_mario_full.py --c0 COLOR0 --c1 COLOR1 --c2 COLOR2 --c3 COLOR3
+python3 scripts/patch_mario_palette.py --c0 COLOR0 --c1 COLOR1 --c2 COLOR2 --c3 COLOR3
 ```
 
 #### Parámetros (todos obligatorios):
@@ -79,17 +82,17 @@ python3 scripts/patch_mario_full.py --c0 COLOR0 --c1 COLOR1 --c2 COLOR2 --c3 COL
 
 #### Skin "Wario":
 ```bash
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
 ```
 
 #### Skin "Zombie":
 ```bash
-python3 scripts/patch_mario_full.py --c0 0x29 --c1 0x15 --c2 0x0F --c3 0x27
+python3 scripts/patch_mario_palette.py --c0 0x29 --c1 0x15 --c2 0x0F --c3 0x27
 ```
 
 #### Skin "Fuego":
 ```bash
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x37 --c2 0x0F --c3 0x16
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x37 --c2 0x0F --c3 0x16
 ```
 
 ### Ejemplo de Salida
@@ -112,7 +115,7 @@ python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x37 --c2 0x0F --c3 0x16
 
 ---
 
-## mutate_chr_range_args.py
+## patch_chr_range.py
 
 ### Descripción
 Muta un rango específico de tiles en la CHR-ROM cambiando los índices de color `01` ↔ `10`. Permite especificar exactamente qué tiles modificar mediante parámetros de línea de comandos.
@@ -124,7 +127,7 @@ Muta un rango específico de tiles en la CHR-ROM cambiando los índices de color
 
 ### Uso
 ```bash
-python3 scripts/mutate_chr_range_args.py --start TILE_INICIAL --count CANTIDAD
+python3 scripts/patch_chr_range.py --start TILE_INICIAL --count CANTIDAD
 ```
 
 #### Parámetros:
@@ -135,22 +138,22 @@ python3 scripts/mutate_chr_range_args.py --start TILE_INICIAL --count CANTIDAD
 
 #### Mutar 256 tiles desde 0x100:
 ```bash
-python3 scripts/mutate_chr_range_args.py --start 0x100 --count 0x100
+python3 scripts/patch_chr_range.py --start 0x100 --count 0x100
 ```
 
 #### Mutar solo los últimos 32 tiles (0x1E0–0x1FF):
 ```bash
-python3 scripts/mutate_chr_range_args.py --start 0x1E0 --count 0x20
+python3 scripts/patch_chr_range.py --start 0x1E0 --count 0x20
 ```
 
 #### Mutar un solo tile (tile 0x1F8):
 ```bash
-python3 scripts/mutate_chr_range_args.py --start 0x1F8 --count 1
+python3 scripts/patch_chr_range.py --start 0x1F8 --count 1
 ```
 
 #### Usar valores decimales:
 ```bash
-python3 scripts/mutate_chr_range_args.py --start 480 --count 32
+python3 scripts/patch_chr_range.py --start 480 --count 32
 ```
 
 ### Ejemplo de Salida
@@ -162,7 +165,7 @@ python3 scripts/mutate_chr_range_args.py --start 480 --count 32
 
 ---
 
-## patch_star_invincible.py
+## patch_star_permanent.py
 
 ### Descripción
 Hackea la rutina de colisión Mario-enemigo para que Mario SIEMPRE sea tratado como si tuviera el efecto de estrella activo. Esto significa que al tocar cualquier enemigo, el enemigo muere y Mario nunca recibe daño.
@@ -185,7 +188,7 @@ Al cambiar `BEQ` por `NOP NOP`, la rutina siempre ejecuta `JMP ShellOrBlockDefea
 
 #### Sin parámetros (crea nueva ROM):
 ```bash
-python3 scripts/patch_star_invincible.py
+python3 scripts/patch_star_permanent.py
 ```
 - Lee: `roms/SuperMarioBros.nes`
 - Crea: `SuperMarioBros_star_infinite_YYYYMMDD_HHMMSS.nes`
@@ -193,7 +196,7 @@ python3 scripts/patch_star_invincible.py
 
 #### Con parámetros (sobreescribe ROM):
 ```bash
-python3 scripts/patch_star_invincible.py roms/mi_rom.nes
+python3 scripts/patch_star_permanent.py roms/mi_rom.nes
 ```
 - Lee: `roms/mi_rom.nes`
 - Sobreescribe: `roms/mi_rom.nes`
@@ -280,7 +283,7 @@ python3 scripts/main.py roms/SuperMarioBros.nes --sync-mode 1
 
 ---
 
-## patch_title_text.py
+## patch_title_message.py
 
 ### Descripción
 Modifica el texto "WORLD  TIME" en la pantalla de título de Super Mario Bros para mostrar un mensaje personalizado como "PYTHON MEETUP MVD". Este script busca la secuencia de bytes que corresponde al texto original y la reemplaza con el nuevo texto.
@@ -295,7 +298,7 @@ Modifica el texto "WORLD  TIME" en la pantalla de título de Super Mario Bros pa
 
 #### Sin parámetros (crea nueva ROM):
 ```bash
-python3 scripts/patch_title_text.py
+python3 scripts/patch_title_message.py
 ```
 - Lee: `roms/SuperMarioBros.nes`
 - Crea: `SuperMarioBros_titlemsg_YYYYMMDD_HHMMSS.nes`
@@ -303,7 +306,7 @@ python3 scripts/patch_title_text.py
 
 #### Con parámetros (sobreescribe ROM):
 ```bash
-python3 scripts/patch_title_text.py roms/mi_rom.nes
+python3 scripts/patch_title_message.py roms/mi_rom.nes
 ```
 - Lee: `roms/mi_rom.nes`
 - Sobreescribe: `roms/mi_rom.nes`
@@ -346,6 +349,52 @@ El script incluye un mapeo de caracteres a tiles NES:
 
 ---
 
+## rl_demo_mario.py
+
+### Descripción
+Ejecuta un pipeline RL con `gym_super_mario_bros` y `stable-baselines3 (PPO)` para entrenar brevemente y luego jugar automáticamente renderizando. Incluye fixes (copias contiguas y batch dim) y silencia un warning inofensivo de overflow del entorno.
+
+### Requisitos sugeridos
+```
+gym==0.21.0
+gym_super_mario_bros==7.3.0
+nes_py==8.2.1
+stable-baselines3==1.6.2
+torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1
+```
+
+### Uso
+- Entrenar y jugar:
+```bash
+python scripts/rl_demo_mario.py --seconds 20 --timesteps 10000
+```
+
+- Cargar modelo guardado y jugar (demo):
+```bash
+python scripts/rl_demo_mario.py --load mario_ppo_model.zip --seconds 30
+```
+
+### Flags
+- `--seconds`: segundos de juego en modo demo/tras entrenar.
+- `--timesteps`: timesteps de entrenamiento PPO (ignorado si `--load`).
+- `--load`: ruta a `.zip` de modelo para saltar entrenamiento.
+- `--save`: ruta donde guardar el modelo entrenado (default `mario_ppo_model.zip`).
+
+### Salida esperada
+```
+🏋️ Entrenando PPO (10000 timesteps)...
+... métricas de SB3 ...
+💾 Modelo guardado en: mario_ppo_model.zip
+⏱️ Tiempo de entrenamiento: 65.2s
+🎮 Jugando 20s...
+✅ Listo. Pasos jugados: 2100, ciclos completados: 1
+```
+
+### Notas
+- Se silencia el warning `overflow encountered in scalar subtract`; es inofensivo.
+- Se usa copia contigua y batch dim en `predict` para evitar errores de strides negativos y acciones no hasheables.
+
+
 ### Colores Comunes en Super Mario Bros:
 - **`0x22`**: Azul/celeste claro (cielo original)
 - **`0x16`**: Rojo (gorra original de Mario)
@@ -374,12 +423,13 @@ El script incluye un mapeo de caracteres a tiles NES:
 ### Estructura de Archivos:
 ```
 charla/
+├── disassembly/
 ├── scripts/
-│   ├── patch_sky_palette_final.py
-│   ├── patch_mario_full.py
-│   ├── mutate_chr_range_args.py
-│   ├── patch_star_invincible.py
-│   ├── patch_title_text.py
+│   ├── patch_sky_night.py
+│   ├── patch_mario_palette.py
+│   ├── patch_chr_range.py
+│   ├── patch_star_permanent.py
+│   ├── patch_title_message.py
 │   └── main.py
 └── roms/
     ├── SuperMarioBros.nes
@@ -398,22 +448,22 @@ charla/
 ### Ejemplo de Flujo:
 ```bash
 # 1. Crear ROM con cielo nocturno
-python3 scripts/patch_sky_palette_final.py
+python3 scripts/patch_sky_night.py
 
 # 2. Probar la ROM modificada
 python3 scripts/main.py roms/SuperMarioBros_sky_night_20251029_123456.nes
 
 # 3. Usar esa ROM para crear skin de Mario
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15 roms/SuperMarioBros_sky_night_20251029_123456.nes
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15 roms/SuperMarioBros_sky_night_20251029_123456.nes
 
 # 4. Probar la ROM con skin de Mario
 python3 scripts/main.py roms/SuperMarioBros_mario_full_22_30_0F_15_20251029_123456.nes
 
 # 5. Hacer a Mario invencible en la ROM resultante
-python3 scripts/patch_star_invincible.py roms/SuperMarioBros_mario_full_22_30_0F_15_20251029_123456.nes
+python3 scripts/patch_star_permanent.py roms/SuperMarioBros_mario_full_22_30_0F_15_20251029_123456.nes
 
 # 6. Modificar el texto del título
-python3 scripts/patch_title_text.py roms/SuperMarioBros_star_infinite_20251029_123456.nes
+python3 scripts/patch_title_message.py roms/SuperMarioBros_star_infinite_20251029_123456.nes
 
 # 7. Probar la ROM final con todas las modificaciones
 python3 scripts/main.py roms/SuperMarioBros_titlemsg_20251029_123456.nes

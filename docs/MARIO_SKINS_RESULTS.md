@@ -17,7 +17,7 @@ Tests de paleta completa de Mario modificando los 4 slots de color.
 
 ## Skin 2: "Skin Test 2"
 
-**Comando:** `python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x18 --c2 0x0F --c3 0x29`
+**Comando:** `python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x18 --c2 0x0F --c3 0x29`
 
 **Paleta usada:** [0x22, 0x18, 0x0F, 0x29]
 
@@ -34,9 +34,9 @@ Tests de paleta completa de Mario modificando los 4 slots de color.
 
 ```bash
 # Skin 1
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x30 --c2 0x0F --c3 0x15
 
 # Skin 2
-python3 scripts/patch_mario_full.py --c0 0x22 --c1 0x18 --c2 0x0F --c3 0x29
+python3 scripts/patch_mario_palette.py --c0 0x22 --c1 0x18 --c2 0x0F --c3 0x29
 ```
 

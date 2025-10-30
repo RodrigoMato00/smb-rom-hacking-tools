@@ -20,33 +20,28 @@ source venv/bin/activate
 ```bash
 cd /Users/rodrigomato/charla
 source venv/bin/activate
-python3 scripts/main.py
+python3 scripts/main.py roms/SuperMarioBros.nes
 ```
 
 ## Cambiar la ROM
 
 ### Ubicación del Archivo
-El archivo `scripts/main.py` contiene la configuración de la ROM en la línea 11:
-
-```python
-nes = NES("/Users/rodrigomato/charla/roms/SuperMarioBros.nes", sync_mode=2)
-```
+Coloca tus ROMs en la carpeta `roms/` del proyecto.
 
 ### Para Cambiar la ROM
-1. **Coloca tu ROM** en la carpeta `roms/`
-2. **Edita la línea 11** en `scripts/main.py`:
-   ```python
-   nes = NES("/Users/rodrigomato/charla/roms/TU_ROM.nes", sync_mode=2)
+1. **Copia tu ROM** en `roms/`
+2. **Ejecuta** pasando la ruta de la ROM como argumento:
+   ```bash
+   python3 scripts/main.py roms/TU_ROM.nes
    ```
-3. **Ejecuta** el emulador normalmente
 
 ### Ejemplo de Cambio
-```python
+```bash
 # ROM original
-nes = NES("/Users/rodrigomato/charla/roms/SuperMarioBros.nes", sync_mode=2)
+python3 scripts/main.py roms/SuperMarioBros.nes
 
 # Cambiar a otra ROM
-nes = NES("/Users/rodrigomato/charla/roms/DonkeyKong.nes", sync_mode=2)
+python3 scripts/main.py roms/DonkeyKong.nes
 ```
 
 ## Controles
@@ -79,8 +74,8 @@ nes = NES("/Users/rodrigomato/charla/roms/DonkeyKong.nes", sync_mode=2)
 - **sync_mode=3** - Sincronización con vsync (requiere ~60Hz vsync, sin tearing)
 
 ### Recomendado
-```python
-nes = NES("ruta/a/tu/rom.nes", sync_mode=2)
+```bash
+python3 scripts/main.py roms/SuperMarioBros.nes --sync-mode 2
 ```
 
 ## Solución de Problemas
@@ -95,7 +90,7 @@ pip install pyaudio
 ```
 
 ### Error de Ruta
-- Usar **rutas absolutas** para evitar problemas
+- Usar **rutas relativas** al root del proyecto (p. ej. `roms/SuperMarioBros.nes`)
 - Verificar que la ROM existe en la ubicación especificada
 
 ### Dependencias Faltantes
@@ -107,10 +102,13 @@ pip install -r requirements.txt
 
 ```
 charla/
-├── roms/                    # ROMs del juego
+├── disassembly/            # Desensamblados y assets de ASM/65xx
+├── roms/                   # ROMs del juego
 │   └── SuperMarioBros.nes
-├── scripts/                 # Scripts de Python
-│   └── main.py             # Archivo principal del emulador
+├── scripts/                # Scripts de Python soportados
+│   ├── main.py             # Emulador (pasar ROM por argumento)
+│   ├── patch_*.py          # Scripts de modificación
+│   └── rl_demo_mario.py     # Demo RL
 ├── venv/                   # Entorno virtual
 └── requirements.txt        # Dependencias
 ```

@@ -6,10 +6,12 @@ Este directorio contiene toda la documentación técnica del proyecto de modific
 
 ### Scripts y Herramientas
 - **[SCRIPTS_DOCUMENTATION.md](SCRIPTS_DOCUMENTATION.md)** - Documentación completa de todos los scripts de modificación
-  - `patch_sky_palette_final.py` - Modificar cielo para efecto noche
-  - `patch_mario_full.py` - Crear skins personalizados de Mario
-  - `mutate_chr_range_args.py` - Mutar tiles específicos en CHR-ROM
-  - `patch_star_invincible.py` - Hacer a Mario invencible permanentemente
+  - `patch_sky_night.py` - Modificar cielo para efecto noche
+  - `patch_mario_palette.py` - Crear skins personalizados de Mario
+  - `patch_chr_range.py` - Mutar tiles específicos en CHR-ROM
+  - `patch_star_permanent.py` - Hacer a Mario invencible permanentemente
+  - `patch_title_message.py` - Modificar texto del título del juego
+  - `rl_demo_mario.py` - Demo de RL (entrenar y jugar automáticamente)
   - `main.py` - Emulador NES para probar ROMs modificadas
 
 ### Estructura del Juego
@@ -49,10 +51,13 @@ charla/
 │   ├── SCRIPTS_DOCUMENTATION.md    # Guía de scripts
 │   └── GAME_STRUCTURE.md           # Arquitectura del juego
 ├── scripts/                        # Herramientas de modificación
-│   ├── patch_sky_palette_final.py
-│   ├── patch_mario_full.py
-│   ├── mutate_chr_range_args.py
-│   └── patch_star_invincible.py
+│   ├── patch_sky_night.py
+│   ├── patch_mario_palette.py
+│   ├── patch_chr_range.py
+│   ├── patch_star_permanent.py
+│   ├── patch_title_message.py
+│   ├── rl_demo_mario.py
+│   └── main.py
 ├── roms/                           # ROMs originales y modificadas
 │   └── SuperMarioBros.nes
 └── smb-disassembly/               # Archivos de assembler

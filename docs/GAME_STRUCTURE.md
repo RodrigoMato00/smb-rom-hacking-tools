@@ -316,10 +316,10 @@ UpdateScreen:       ; $8E00
 ## Herramientas de Desarrollo
 
 ### Scripts Disponibles
-- **`patch_sky_palette_final.py`**: Modificar colores del cielo
-- **`patch_mario_full.py`**: Crear skins de Mario
-- **`patch_star_invincible.py`**: Hacer Mario invencible
-- **`mutate_chr_range_args.py`**: Modificar tiles gráficos
+- **`patch_sky_night.py`**: Modificar colores del cielo
+- **`patch_mario_palette.py`**: Crear skins de Mario
+- **`patch_star_permanent.py`**: Hacer Mario invencible
+- **`patch_chr_range.py`**: Modificar tiles gráficos
 
 ### Archivos de Referencia
 - **`mario.txt`**: Desensamblado completo del juego
