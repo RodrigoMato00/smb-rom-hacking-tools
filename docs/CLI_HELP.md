@@ -63,7 +63,8 @@ This document summarizes usage, arguments and examples for the main scripts.
   - `--level` (required): Level 1..4.
   - `--dry-run`: List candidates without patching.
   - `--pick N`: Candidate index to patch (default: 0).
-- Notes: Converts 1-based to 0-based internally. Candidate 0 uses GoContinue (requires A+START).
+- Notes: Converts 1-based to 0-based internally. Candidate 0 uses GoContinue (requires A+START simultaneously).
+- Important: In emulator, press H (START) + P (A) at the same time on title screen to activate Continue.
 - Examples:
   - `python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 3 --level 1 --dry-run`
   - `python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 8 --level 4 --pick 0`

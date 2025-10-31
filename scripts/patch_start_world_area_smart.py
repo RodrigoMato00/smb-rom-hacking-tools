@@ -312,6 +312,7 @@ def main():
             print(f"World {args.world}, Level {args.level} (internal {w_int:#04x},{a_int:#04x})")
             print(f"Output: {out_path}")
             print("Should now work with normal START (without A+START).")
+            print("Note: If using --pick 0, still requires A+START simultaneously (H+P in emulator).")
 
     if args.dry_run:
         print("Dry-run mode: no output written. Choose correct index with --pick N.")
@@ -368,7 +369,8 @@ def main():
 
     print(f"Patch applied. World {args.world}, Level {args.level} (internal {w_int:#04x},{a_int:#04x})")
     print(f"Output: {out_path}")
-    print("Tip: From title screen, press START directly (without Continue). If it doesn't jump to chosen world/level, run with --dry-run and try another --pick.")
+    print("Tip: From title screen, press A+START simultaneously (H+P in emulator) to activate Continue.")
+    print("     If it doesn't jump to chosen world/level, run with --dry-run and try another --pick.")
 
 
 if __name__ == "__main__":
