@@ -19,7 +19,9 @@ repo/
 │   ├── patch_chr_range.py          # Mutar rango de tiles CHR
 │   ├── patch_star_permanent.py     # Invencibilidad permanente
 │   ├── patch_title_message.py      # Texto de la pantalla de título
+│   ├── patch_start_world_area_smart.py  # Parchear mundo/nivel de inicio
 │   ├── rl_demo_mario.py            # Demo RL (Python 3.8)
+│   ├── rl_demo_mario_custom.py     # Demo RL con ROMs personalizadas
 │   └── assembly/                   # Desensamblados y assets ASM
 │       ├── mario.txt               # Desensamblado en texto
 │       ├── SuperMarioBros_disasm.asm
@@ -52,8 +54,9 @@ repo/
 
 ### scripts/
 - `main.py`: Lanza el emulador (requiere instalar `depends/pyntendo-repo`).
-- `patch_*.py`: Scripts de parcheo de ROM (paletas, tiles, invencibilidad, título).
+- `patch_*.py`: Scripts de parcheo de ROM (paletas, tiles, invencibilidad, título, mundo/nivel).
 - `rl_demo_mario.py`: Demo de entrenamiento/ejecución RL (usar `venv38`).
+- `rl_demo_mario_custom.py`: Demo RL con ROMs personalizadas usando `nes_py`.
 - `assembly/`: Desensamblados y archivos de apoyo al análisis ASM.
 
 ### smb-disassembly/

@@ -54,6 +54,20 @@ This document summarizes usage, arguments and examples for the main scripts.
   - `python3 scripts/patch_title_message.py`
   - `python3 scripts/patch_title_message.py roms/Custom.nes`
 
+## patch_start_world_area_smart.py
+- Description: Patch starting world/level using heuristic search for $075F/$0760 writes.
+- Usage: `python3 scripts/patch_start_world_area_smart.py --rom PATH --world N --level N [--dry-run] [--pick N]`
+- Arguments:
+  - `--rom` (required): NES ROM path.
+  - `--world` (required): World 1..8.
+  - `--level` (required): Level 1..4.
+  - `--dry-run`: List candidates without patching.
+  - `--pick N`: Candidate index to patch (default: 0).
+- Notes: Converts 1-based to 0-based internally. Candidate 0 uses GoContinue (requires A+START).
+- Examples:
+  - `python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 3 --level 1 --dry-run`
+  - `python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 8 --level 4 --pick 0`
+
 ## main.py
 - Description: Run the NES emulator with a given ROM.
 - Usage: `python3 scripts/main.py ROM_PATH [--sync-mode N]`
@@ -70,3 +84,18 @@ This document summarizes usage, arguments and examples for the main scripts.
 - Examples:
   - `python3 scripts/rl_demo_mario.py --seconds 5 --timesteps 1000`
   - `python3 scripts/rl_demo_mario.py --load mario_ppo_model.zip --seconds 20`
+
+## rl_demo_mario_custom.py (Python 3.8)
+- Description: RL demo with custom ROMs using nes_py (auto-boot wrapper included).
+- Usage: `python3 scripts/rl_demo_mario_custom.py --rom PATH [--timesteps T] [--seconds S] [--forever] [--load PATH] [--save PATH]`
+- Arguments:
+  - `--rom` (required): Custom NES ROM path.
+  - `--timesteps`: PPO training timesteps (default: 10000).
+  - `--seconds`: Demo play seconds (default: 20).
+  - `--forever`: Play indefinitely (ignores --seconds).
+  - `--load`: Load trained model (.zip) to skip training.
+  - `--save`: Save model path (default: `mario_ppo_model.zip`).
+- Notes: Auto-boots game menus. Works with modified ROMs.
+- Examples:
+  - `python3 scripts/rl_demo_mario_custom.py --rom roms/Custom.nes --timesteps 50000 --seconds 60`
+  - `python3 scripts/rl_demo_mario_custom.py --rom roms/Patched.nes --load models/model.zip --forever`

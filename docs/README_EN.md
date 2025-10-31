@@ -18,7 +18,9 @@ Quick environment and run commands are in the main README (sections “Quick Sta
   - `patch_chr_range.py` - Mutate specific CHR-ROM tiles
   - `patch_star_permanent.py` - Permanent invincibility
   - `patch_title_message.py` - Modify title screen text
+  - `patch_start_world_area_smart.py` - Patch starting world/level
   - `rl_demo_mario.py` - RL demo (train and play)
+  - `rl_demo_mario_custom.py` - Train/play with custom ROMs
   - `main.py` - NES emulator to test ROMs
 
 ### Game Structure
@@ -62,7 +64,9 @@ charla/
 │   ├── patch_chr_range.py
 │   ├── patch_star_permanent.py
 │   ├── patch_title_message.py
+│   ├── patch_start_world_area_smart.py
 │   ├── rl_demo_mario.py
+│   ├── rl_demo_mario_custom.py
 │   └── main.py
 ├── roms/                           # Original and modified ROMs
 │   └── SuperMarioBros.nes

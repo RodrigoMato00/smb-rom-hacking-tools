@@ -2,7 +2,7 @@
 
 Este documento describe los scripts principales para modificar Super Mario Bros (NES) desarrollados en este proyecto.
 
-> Scripts soportados: `patch_sky_night.py`, `patch_mario_palette.py`, `patch_chr_range.py`, `patch_star_permanent.py`, `patch_title_message.py`, `main.py`, `rl_demo_mario.py`.
+> Scripts soportados: `patch_sky_night.py`, `patch_mario_palette.py`, `patch_chr_range.py`, `patch_star_permanent.py`, `patch_title_message.py`, `patch_start_world_area_smart.py`, `main.py`, `rl_demo_mario.py`, `rl_demo_mario_custom.py`.
 
 ## Índice
 
@@ -10,9 +10,11 @@ Este documento describe los scripts principales para modificar Super Mario Bros 
 2. [patch_mario_palette.py](#patch_mario_fullpy) - Crear skins personalizados de Mario
 3. [patch_chr_range.py](#mutate_chr_range_argspy) - Mutar tiles específicos en CHR-ROM
 4. [patch_star_permanent.py](#patch_star_invinciblepy) - Hacer a Mario invencible permanentemente
-5. [main.py](#mainpy) - Emulador NES para probar ROMs modificadas
-6. [patch_title_message.py](#patch_title_textpy) - Modificar texto del título del juego
-7. [rl_demo_mario.py](#mario_rl_runpy) - Entrenar PPO y jugar con AI
+5. [patch_title_message.py](#patch_title_textpy) - Modificar texto del título del juego
+6. [patch_start_world_area_smart.py](#patch_start_world_area_smartpy) - Parchear mundo/nivel de inicio
+7. [main.py](#mainpy) - Emulador NES para probar ROMs modificadas
+8. [rl_demo_mario.py](#mario_rl_runpy) - Entrenar PPO y jugar con AI
+9. [rl_demo_mario_custom.py](#rl_demo_mario_custompy) - Entrenar/jugar con ROMs personalizadas
 
 ---
 
@@ -349,6 +351,73 @@ El script incluye un mapeo de caracteres a tiles NES:
 
 ---
 
+## patch_start_world_area_smart.py
+
+### Descripción
+Parchea el mundo y nivel de inicio en Super Mario Bros usando un algoritmo heurístico que busca escrituras a `$075F` (WorldNumber) y `$0760` (AreaNumber), retrocediendo para encontrar valores inmediatos que los alimentan. Soporta múltiples candidatos y permite elegir cuál parchear.
+
+### Funcionamiento Técnico
+- **Búsqueda heurística**: Escanea todas las escrituras (`STA`, `STX`) a `$075F` y `$0760`
+- **Backtracking**: Para cada escritura, busca hacia atrás valores inmediatos (`LDA #imm`, `LDX #imm`) que alimentan esos registros
+- **Candidatos**: Lista todos los posibles lugares donde se inicializan mundo/nivel
+- **Parcheo inteligente**: Para `GoContinue` (candidato 0), también parchea `LDA ContinueWorld` antes de la llamada
+
+### Uso
+
+#### Listar candidatos (dry-run):
+```bash
+python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 8 --level 4 --dry-run
+```
+
+#### Parchear candidato específico:
+```bash
+python3 scripts/patch_start_world_area_smart.py --rom roms/SuperMarioBros.nes --world 3 --level 1 --pick 0
+```
+
+### Parámetros
+- **`--rom`** (requerido): Ruta a ROM iNES
+- **`--world`** (requerido): Mundo 1..8 (convertido internamente a 0..7)
+- **`--level`** (requerido): Nivel 1..4 (convertido internamente a 0..3)
+- **`--dry-run`**: Lista candidatos sin parchear
+- **`--pick N`**: Índice del candidato a parchear (default: 0)
+
+### Ejemplo de Salida (dry-run)
+```
+Candidatos (ordenados por aparición):
+
+[0] W: site 0x030E op STA reg A imm off 0x0306 val 0x00  |  A: site 0x0316 op STX reg X imm off 0x0315 val 0x00
+[1] W: site 0x-001 op ?? reg None imm (no hallado)  |  A: site 0x046F op STA reg A imm off 0x046E val 0x00
+[2] W: site 0x-001 op ?? reg None imm (no hallado)  |  A: site 0x5F3B op STA reg A imm off 0x5F37 val 0x00
+
+Modo dry-run: no se escribe salida. Elegí el índice correcto con --pick N.
+```
+
+### Ejemplo de Salida (parcheo)
+```
+Candidatos (ordenados por aparición):
+
+[0] W: site 0x030E op STA reg A imm off 0x0306 val 0x00  |  A: site 0x0316 op STX reg X imm off 0x0315 val 0x00
+
+✅ Parcheado LDA ContinueWorld en PRG+0x02E0 -> LDA #2
+Parche aplicado. Mundo 3, Nivel 1 (interno 0x02,0x00)
+Output: roms/SuperMarioBros_startW3L1_smart_20251031_091616.nes
+Tip: Desde la pantalla de título, apretá START directo (sin Continue). Si no salta al mundo/nivel elegido, ejecutá con --dry-run y probá otro --pick.
+```
+
+### Notas Importantes
+- **Candidato 0**: Usa `GoContinue`, requiere presionar **A+START** (Continue) en la pantalla de título
+- **Internos vs Usuario**: El script convierte automáticamente mundo 1-8 → 0-7 y nivel 1-4 → 0-3
+- **Backup automático**: Crea ROMs nuevas con timestamp, nunca modifica la original
+- **Compatibilidad**: Funciona con ROMs estándar de Super Mario Bros
+
+### Casos de Uso
+- Testing rápido: Ir directo a niveles específicos para pruebas
+- Speedruns: Crear ROMs que empiecen en mundos/niveles avanzados
+- Experimentación: Probar diferentes combinaciones de mundo/nivel
+- Desarrollo: Acceso rápido a áreas específicas del juego
+
+---
+
 ## rl_demo_mario.py
 
 ### Descripción
@@ -394,6 +463,68 @@ Listo. Pasos jugados: 2100, ciclos completados: 1
 - Se silencia el warning `overflow encountered in scalar subtract`; es inofensivo.
 - Se usa copia contigua y batch dim en `predict` para evitar errores de strides negativos y acciones no hasheables.
 
+---
+
+## rl_demo_mario_custom.py
+
+### Descripción
+Extensión de `rl_demo_mario.py` que permite entrenar y jugar con ROMs personalizadas de Super Mario Bros usando `nes_py` en lugar de `gym_super_mario_bros`. Incluye wrapper automático para pasar menús de inicio y mapeo de acciones corregido.
+
+### Funcionamiento Técnico
+- **Carga de ROM personalizada**: Usa `nes_py.NESEnv` para cargar ROMs externas
+- **Sanitización de headers**: Corrige automáticamente headers iNES para compatibilidad
+- **Auto-boot wrapper**: Presiona automáticamente START/A/SELECT para pasar menús de inicio
+- **Mapeo de acciones**: Corrige movimiento hacia atrás mapeando acción 6 (left) a acción 1 (right)
+
+### Uso
+
+#### Entrenar con ROM personalizada:
+```bash
+python3 scripts/rl_demo_mario_custom.py --rom roms/Custom.nes --timesteps 50000 --seconds 60
+```
+
+#### Jugar con modelo entrenado:
+```bash
+python3 scripts/rl_demo_mario_custom.py --rom roms/Custom.nes --load models/mario_ppo_model.zip --seconds 30
+```
+
+#### Modo forever (jugar indefinidamente):
+```bash
+python3 scripts/rl_demo_mario_custom.py --rom roms/Custom.nes --load models/mario_ppo_model.zip --forever
+```
+
+### Parámetros
+- **`--rom`** (requerido): Ruta a ROM personalizada (.nes)
+- **`--timesteps`**: Timesteps de entrenamiento PPO (default: 10000)
+- **`--seconds`**: Segundos de juego en modo demo (default: 20)
+- **`--forever`**: Jugar indefinidamente (ignora --seconds)
+- **`--load`**: Ruta a modelo entrenado (.zip) para saltar entrenamiento
+- **`--save`**: Ruta donde guardar el modelo entrenado (default: `mario_ppo_model.zip`)
+
+### Ejemplo de Salida
+```
+Training PPO (50000 timesteps)...
+Using cpu device
+Wrapping the env with a `Monitor` wrapper
+...
+Model saved to: models/mario_ppo_model.zip
+Training time: 120.5s
+Playing 60s...
+Done. Total steps: 3600, level resets: 0
+```
+
+### Notas Importantes
+- **ROM personalizada**: Debe ser una ROM válida de Super Mario Bros en formato iNES
+- **Auto-boot**: El wrapper automáticamente pasa la pantalla de título y selección de jugadores
+- **Compatibilidad**: Funciona con ROMs modificadas (ej: con parches de mundo/nivel, invencibilidad, etc.)
+- **Requisitos**: Python 3.8, `nes_py==8.2.1`, `stable-baselines3==1.6.2`, `torch==1.13.1`
+
+### Casos de Uso
+- Entrenar IA con ROMs modificadas: Probar comportamiento con diferentes hacks
+- Testing de ROMs: Verificar que ROMs personalizadas funcionen correctamente con RL
+- Experimentación: Probar diferentes modificaciones de gameplay con aprendizaje por refuerzo
+
+---
 
 ### Colores Comunes en Super Mario Bros:
 - **`0x22`**: Azul/celeste claro (cielo original)
@@ -430,6 +561,9 @@ charla/
 │   ├── patch_chr_range.py
 │   ├── patch_star_permanent.py
 │   ├── patch_title_message.py
+│   ├── patch_start_world_area_smart.py
+│   ├── rl_demo_mario.py
+│   ├── rl_demo_mario_custom.py
 │   └── main.py
 └── roms/
     ├── SuperMarioBros.nes
