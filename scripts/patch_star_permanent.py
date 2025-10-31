@@ -65,7 +65,7 @@ def main():
                         help="Path to NES ROM (default uses SuperMarioBros.nes and creates a new ROM)")
     args = parser.parse_args()
 
-    # Determinar qué ROM usar
+    # Determine which ROM to use
     if args.rom_path is None:
         rom_path = "roms/SuperMarioBros.nes"
         create_new = True

@@ -88,12 +88,23 @@ def epilog_rl() -> str:
     )
 
 
+def epilog_start_world_area() -> str:
+    p = _cmd("patch_start_world_area")
+    return (
+        "Examples:\n"
+        f"  {p} --rom roms/SuperMarioBros.nes --world 8 --level 4\n"
+        f"  {p} --rom roms/Custom.nes --world 1 --level 2\n\n"
+        "Notes: Searches for LDA/STA $075F/$0760 pattern. Python 3.13 recommended."
+    )
+
+
 epilogs = {
     "patch_sky_night": epilog_sky,
     "patch_mario_palette": epilog_mario_palette,
     "patch_chr_range": epilog_chr_range,
     "patch_star_permanent": epilog_star,
     "patch_title_message": epilog_title,
+    "patch_start_world_area": epilog_start_world_area,
     "main": epilog_main,
     "rl_demo_mario": epilog_rl,
 }

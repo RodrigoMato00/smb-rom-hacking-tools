@@ -26,7 +26,9 @@ pip install -r requirements-rl.txt
   - `patch_chr_range.py` - Mutar tiles específicos en CHR-ROM
   - `patch_star_permanent.py` - Hacer a Mario invencible permanentemente
   - `patch_title_message.py` - Modificar texto del título del juego
+  - `patch_start_world_area_smart.py` - Parchear mundo/nivel de inicio
   - `rl_demo_mario.py` - Demo de RL (entrenar y jugar automáticamente)
+  - `rl_demo_mario_custom.py` - Demo RL con ROMs personalizadas
   - `main.py` - Emulador NES para probar ROMs modificadas
 
 ### Estructura del Juego
@@ -70,7 +72,9 @@ charla/
 │   ├── patch_chr_range.py
 │   ├── patch_star_permanent.py
 │   ├── patch_title_message.py
+│   ├── patch_start_world_area_smart.py
 │   ├── rl_demo_mario.py
+│   ├── rl_demo_mario_custom.py
 │   └── main.py
 ├── roms/                           # ROMs originales y modificadas
 │   └── SuperMarioBros.nes

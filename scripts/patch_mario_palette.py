@@ -52,7 +52,7 @@ def parse_hexbyte(s):
         s = s[2:]
     val = int(s, 16)
     if not (0 <= val <= 0x3F):
-        # Paleta PPU típica es 0x00-0x3F
+        # PPU palette is 0x00-0x3F
         if not (0 <= val <= 0xFF):
             raise ValueError(f"value out of NES range: {val}")
         print(f"Warning: {val:02X} is outside typical NES palette range 0x00-0x3F, continuing anyway.")
