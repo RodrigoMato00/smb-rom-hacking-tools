@@ -401,11 +401,13 @@ Candidatos (ordenados por aparición):
 ✅ Parcheado LDA ContinueWorld en PRG+0x02E0 -> LDA #2
 Parche aplicado. Mundo 3, Nivel 1 (interno 0x02,0x00)
 Output: roms/SuperMarioBros_startW3L1_smart_20251031_091616.nes
-Tip: Desde la pantalla de título, apretá START directo (sin Continue). Si no salta al mundo/nivel elegido, ejecutá con --dry-run y probá otro --pick.
+Tip: Desde la pantalla de título, presiona A+START simultáneamente (H+P en el emulador) para activar Continue. Si no salta al mundo/nivel elegido, ejecutá con --dry-run y probá otro --pick.
 ```
 
 ### Notas Importantes
-- **Candidato 0**: Usa `GoContinue`, requiere presionar **A+START** (Continue) en la pantalla de título
+- **Candidato 0**: Usa `GoContinue`, requiere presionar **A+START** (Continue) simultáneamente en la pantalla de título
+  - **Teclas del emulador**: H (START) + P (A) - deben presionarse al mismo tiempo
+  - Esto activa la función "Continue" que carga el mundo/nivel parcheado
 - **Internos vs Usuario**: El script convierte automáticamente mundo 1-8 → 0-7 y nivel 1-4 → 0-3
 - **Backup automático**: Crea ROMs nuevas con timestamp, nunca modifica la original
 - **Compatibilidad**: Funciona con ROMs estándar de Super Mario Bros
