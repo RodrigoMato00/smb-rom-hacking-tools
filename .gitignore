@@ -190,3 +190,10 @@ Thumbs.db
 *.sav
 *.state
 *.srm
+
+# Modelos de RL entrenados
+models/*.zip
+mario_ppo_model*.zip
+
+# ROMs temporalmente sanitizadas para nes_py
+*.sanitized.nes
